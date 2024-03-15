@@ -1,0 +1,14 @@
+version: '3'
+services:
+  db2:
+    image: ibmcase/greendb2
+    hostname: db2server
+    privileged: true
+    ports:
+      - "50000:50000"
+    environment:
+      LICENSE: 'accept'
+      DB2INST1_PASSWORD: 'db2inst1'
+      DBNAME: 'INVDB'
+    volumes:
+      - ./db2/database:/database

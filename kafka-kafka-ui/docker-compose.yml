@@ -7,6 +7,7 @@ services:
       - "2181:2181"
     networks:
       - kafka-net
+
   kafka:
     image: wurstmeister/kafka
     container_name: kafka
@@ -21,6 +22,7 @@ services:
       KAFKA_CREATE_TOPICS: "baeldung:1:1"
     networks:
       - kafka-net
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     depends_on:
@@ -32,6 +34,7 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
     networks:
       - kafka-net
+      
 networks:
   kafka-net:
     driver: bridge
