@@ -1,0 +1,12 @@
+version: '3'
+services:
+  sftp-server:
+    image: atmoz/sftp
+    container_name: sftp-server
+    ports:
+      - "2222:22"  # กำหนดพอร์ตที่จะใช้ในการเชื่อมต่อ SFTP (ใช้พอร์ต 2222)
+    # environment:
+      # USERS: "foo:P@ssw0rd:1001"  # กำหนด username:password:UID ของผู้ใช้ (ในที่นี้ username คือ user, password คือ pass, UID คือ 1001)
+    volumes:
+      - /home/jack/sftp/upload:/home/foo/upload  # กำหนด directory ที่จะใช้เป็น root directory ของ SFTP server
+    command: foo:P@ssw0rd:1001
