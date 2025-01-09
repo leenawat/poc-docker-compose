@@ -1,0 +1,36 @@
+FROM ubuntu:latest
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    tar \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install kubectl
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+    && chmod +x kubectl \
+    && mv kubectl /usr/local/bin/
+  
+# RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl" \
+#     && chmod +x kubectl \
+#     && mv kubectl /usr/local/bin/
+
+    
+# Install oc (OpenShift CLI)
+RUN curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz" \
+    && tar -xvf openshift-client-linux.tar.gz \
+    && chmod +x oc \
+    && mv oc /usr/local/bin/ \
+    && rm openshift-client-linux.tar.gz
+
+# RUN curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux-arm64.tar.gz" \
+#     && tar -xvf openshift-client-linux-arm64.tar.gz \
+#     && chmod +x oc \
+#     && mv oc /usr/local/bin/ \
+#     && rm openshift-client-linux-arm64.tar.gz
+    
+# Ensure the directory exists and append seccomp=unconfined
+RUN mkdir -p /etc/docker && echo 'seccomp=unconfined' >> /etc/docker/daemon.json
+
+# Set entrypoint
+ENTRYPOINT ["/bin/sh"]
