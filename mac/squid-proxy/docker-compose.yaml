@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  squid-proxy:
+    image: ubuntu/squid:latest
+    ports:
+      - "3128:3128"
+    volumes:
+      - ./squid.conf:/etc/squid/squid.conf
+      - squid_logs:/var/log/squid
+      - squid_cache:/var/spool/squid
+    networks:
+      - proxy-network
+    # เปิด debug logs
+    command: ["squid", "-N", "-d", "1"]
+
+networks:
+  proxy-network:
+
+volumes:
+  squid_logs:
+  squid_cache:
