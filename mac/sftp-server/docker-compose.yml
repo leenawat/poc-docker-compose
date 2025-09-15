@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  sftp:
+    image: atmoz/sftp:latest
+    container_name: sftp-server
+    ports:
+      - "2222:22"
+    volumes:
+      # Data directory
+      - ./data:/home/sftpuser/upload
+      
+      # SSH host keys (เพื่อให้ fingerprint ไม่เปลี่ยน)
+      - ./config/keys/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key:ro
+      - ./config/keys/ssh_host_rsa_key.pub:/etc/ssh/ssh_host_rsa_key.pub:ro
+      - ./config/keys/ssh_host_ecdsa_key:/etc/ssh/ssh_host_ecdsa_key:ro
+      - ./config/keys/ssh_host_ecdsa_key.pub:/etc/ssh/ssh_host_ecdsa_key.pub:ro
+      - ./config/keys/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key:ro
+      - ./config/keys/ssh_host_ed25519_key.pub:/etc/ssh/ssh_host_ed25519_key.pub:ro
+      
+      # User authorized keys
+      - ./config/keys/authorized_keys:/home/sftpuser/.ssh/authorized_keys:ro
+      
+      # Logs
+      - ./logs:/var/log
+    command: sftpuser::1001:100:upload
+    restart: unless-stopped
+    environment:
+      - SFTP_USERS=sftpuser::1001:100:upload
+    networks:
+      - sftp-network
+
+networks:
+  sftp-network:
+    driver: bridge
