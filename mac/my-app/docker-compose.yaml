@@ -6,12 +6,27 @@ services:
     image: atmoz/sftp
     ports:
       - "2222:22"  # กำหนดพอร์ตที่จะใช้ในการเชื่อมต่อ SFTP (ใช้พอร์ต 2222)
-    # environment:
-      # USERS: "foo:P@ssw0rd:1001"  # กำหนด username:password:UID ของผู้ใช้ (ในที่นี้ username คือ user, password คือ pass, UID คือ 1001)
     volumes:
-      # - /home/jack/sftp/upload:/home/foo/upload  # กำหนด directory ที่จะใช้เป็น root directory ของ SFTP server on Windows
-      - /Users/jack/sftp/upload:/home/foo/upload  # กำหนด directory ที่จะใช้เป็น root directory ของ SFTP server on Mac
-    command: foo:P@ssw0rd:1001
+      # Data directory
+      - ./sftp-server/data:/home/sftpuser/upload
+      
+      # SSH host keys (เพื่อให้ fingerprint ไม่เปลี่ยน)
+      - ./sftp-server/config/keys/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key:ro
+      - ./sftp-server/config/keys/ssh_host_rsa_key.pub:/etc/ssh/ssh_host_rsa_key.pub:ro
+      - ./sftp-server/config/keys/ssh_host_ecdsa_key:/etc/ssh/ssh_host_ecdsa_key:ro
+      - ./sftp-server/config/keys/ssh_host_ecdsa_key.pub:/etc/ssh/ssh_host_ecdsa_key.pub:ro
+      - ./sftp-server/config/keys/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key:ro
+      - ./sftp-server/config/keys/ssh_host_ed25519_key.pub:/etc/ssh/ssh_host_ed25519_key.pub:ro
+      
+      # User authorized keys
+      - ./sftp-server/config/keys/authorized_keys:/home/sftpuser/.ssh/authorized_keys:ro
+
+      # Logs
+      - ./sftp-server/logs:/var/log
+    command: sftpuser:mypassword:1001:100:upload
+    restart: unless-stopped
+    environment:
+      - SFTP_USERS=sftpuser:mypassword:1001:100:upload
     networks:
       - app-network
 

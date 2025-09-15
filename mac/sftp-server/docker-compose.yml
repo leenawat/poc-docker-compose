@@ -23,10 +23,10 @@ services:
       
       # Logs
       - ./logs:/var/log
-    command: sftpuser::1001:100:upload
+    command: sftpuser:mypassword:1001:100:upload
     restart: unless-stopped
     environment:
-      - SFTP_USERS=sftpuser::1001:100:upload
+      - SFTP_USERS=sftpuser:mypassword:1001:100:upload
     networks:
       - sftp-network
 
